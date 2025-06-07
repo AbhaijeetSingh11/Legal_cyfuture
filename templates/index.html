@@ -1,0 +1,585 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Summarizer</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .upload-box { border: 2px dashed #ccc; padding: 20px; text-align: center; margin: 20px 0; }
+        #result { 
+            margin-top: 20px; 
+            white-space: pre-wrap;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #loading { 
+            display: none; 
+            margin: 20px 0; 
+            text-align: center;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error { color: #d9534f; }
+        .success { color: #5cb85c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Summarizer</h1>
+        <div class="upload-box">
+            <input type="file" id="pdfFile" accept=".pdf">
+            <button onclick="uploadPDF()">Summarize PDF</button>
+        </div>
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Processing your PDF... This may take a few minutes</p>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function uploadPDF() {
+            const fileInput = document.getElementById('pdfFile');
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+            
+            if (!fileInput.files.length) {
+                showResult('Please select a PDF file first.', 'error');
+                return;
+            }
+            
+            // Reset UI
+            loadingDiv.style.display = 'block';
+            resultDiv.innerHTML = '';
+            
+            const formData = new FormData();
+            formData.append('pdf', fileInput.files[0]);
+            
+            try {
+                // Add timeout (5 minutes)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 300000);
+                
+                const response = await fetch('/summarize', {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    const error = await response.json().catch(() => ({}));
+                    throw new Error(error.error || 'Server error');
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'error') {
+                    showResult(data.error || 'Unknown error', 'error');
+                } else {
+                    showResult(data.summary, 'success');
+                }
+                
+            } catch (error) {
+                let message = error.message;
+                if (error.name === 'AbortError') {
+                    message = 'Processing timed out (5 minutes). Try with a smaller PDF.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    message = 'Connection to server lost. The PDF might be too large or the server crashed.';
+                }
+                showResult(message, 'error');
+                console.error('Error:', error);
+                
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Document Summarizer | LawBrief AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #d4a76a;
+            --accent-color: #8b0000;
+            --light-bg: #f8f5f0;
+            --dark-text: #333333;
+            --light-text: #f8f8f8;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23d4a76a" fill-opacity="0.05" d="M0 0h100v100H0z"/><path fill="none" stroke="%23d4a76a" stroke-opacity="0.1" stroke-width="1" d="M0 0h100v100H0z"/></svg>');
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 2rem 0;
+            border-bottom: 5px solid var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-top: 2rem;
+            border: 1px solid #e0e0e0;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 2.2rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .upload-section {
+            border: 2px dashed #ccc;
+            padding: 2.5rem;
+            text-align: center;
+            margin: 2rem 0;
+            border-radius: 6px;
+            background-color: #fcfcfc;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: var(--primary-color);
+            background-color: #f9f9f9;
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin: 0.5rem 0;
+        }
+        
+        .file-label:hover {
+            background-color: #0f2a4a;
+            transform: translateY(-2px);
+        }
+        
+        .selected-file {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: #6d0000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .spinner {
+            border: 5px solid rgba(212, 167, 106, 0.2);
+            border-top: 5px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 6px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.4rem;
+        }
+        
+        .download-btn {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .download-btn:hover {
+            background-color: #c99a5a;
+        }
+        
+        .summary-content {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        
+        .error {
+            color: #d32f2f;
+            background-color: #fde8e8;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .upload-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">⚖️</div>
+                <div>
+                    <div class="logo-text">LawBrief AI</div>
+                    <div class="tagline">Precision Legal Document Summarization</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h1>Legal Document Summarizer</h1>
+            <p>Upload case files, contracts, or legal briefs to generate concise, accurate summaries. Save hours of reading time while capturing all critical legal points.</p>
+            
+            <div class="upload-section">
+                <div class="upload-icon">📄</div>
+                <h3>Upload Legal Document</h3>
+                <p>Supported format: PDF (max 50MB)</p>
+                
+                <input type="file" id="pdfFile" accept=".pdf" class="file-input">
+                <label for="pdfFile" class="file-label">Choose Legal Document</label>
+                <div id="selectedFileName" class="selected-file"></div>
+                
+                <button id="summarizeBtn" class="submit-btn" onclick="uploadPDF()" disabled>
+                    <span id="btnText">Summarize Document</span>
+                    <span id="btnIcon">🔍</span>
+                </button>
+            </div>
+            
+            <div id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing legal document... This may take a few minutes</p>
+                <p><small>Processing: <span id="currentStatus">Extracting text</span></small></p>
+            </div>
+            
+            <div id="result" style="display: none;">
+                <div class="result-header">
+                    <h3 class="result-title">Legal Summary</h3>
+                    <button class="download-btn" onclick="downloadSummary()">
+                        <span>Download</span>
+                        <span>⬇️</span>
+                    </button>
+                </div>
+                <div id="summaryContent" class="summary-content"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 LawBrief AI | Confidentiality Guaranteed | Attorney-Client Privilege Maintained</p>
+    </footer>
+
+    <script>
+        let summaryText = '';
+        let currentFileName = '';
+        
+        // Update selected file name display
+        document.getElementById('pdfFile').addEventListener('change', function(e) {
+            const fileInput = e.target;
+            const fileNameDisplay = document.getElementById('selectedFileName');
+            const summarizeBtn = document.getElementById('summarizeBtn');
+            
+            if (fileInput.files.length > 0) {
+                currentFileName = fileInput.files[0].name;
+                fileNameDisplay.textContent = `Selected: ${currentFileName}`;
+                summarizeBtn.disabled = false;
+            } else {
+                fileNameDisplay.textContent = '';
+                summarizeBtn.disabled = true;
+            }
+        });
+        
+        async function uploadPDF() {
+            const fileInput = document.getElementById('pdfFile');
+            const resultDiv = document.getElementById('result');
+            const summaryContent = document.getElementById('summaryContent');
+            const loadingDiv = document.getElementById('loading');
+            const statusText = document.getElementById('currentStatus');
+            const summarizeBtn = document.getElementById('summarizeBtn');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+            
+            if (!fileInput.files.length) {
+                showResult('Please select a legal document first.', 'error');
+                return;
+            }
+            
+            // UI Updates
+            summarizeBtn.disabled = true;
+            btnText.textContent = 'Processing...';
+            btnIcon.textContent = '⏳';
+            loadingDiv.style.display = 'block';
+            resultDiv.style.display = 'none';
+            
+            const formData = new FormData();
+            formData.append('pdf', fileInput.files[0]);
+            
+            try {
+                // Update status
+                statusText.textContent = 'Extracting text...';
+                
+                // Add timeout (7 minutes for legal documents)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 420000);
+                
+                const response = await fetch('/summarize', {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    const error = await response.json().catch(() => ({}));
+                    throw new Error(error.error || 'Server error occurred during processing');
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'error') {
+                    showResult(data.error || 'Error processing legal document', 'error');
+                } else {
+                    summaryText = data.summary;
+                    summaryContent.textContent = data.summary;
+                    resultDiv.style.display = 'block';
+                }
+                
+            } catch (error) {
+                let message = error.message;
+                if (error.name === 'AbortError') {
+                    message = 'Analysis timed out (7 minutes). Try with a smaller document or split into sections.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    message = 'Connection to server lost. The document might be too large or the server encountered an error.';
+                } else if (error.message.includes('Server error')) {
+                    message = 'Server error: ' + error.message;
+                }
+                showResult(message, 'error');
+                console.error('Legal document processing error:', error);
+                
+            } finally {
+                loadingDiv.style.display = 'none';
+                summarizeBtn.disabled = false;
+                btnText.textContent = 'Summarize Document';
+                btnIcon.textContent = '🔍';
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            const summaryContent = document.getElementById('summaryContent');
+            
+            if (type === 'error') {
+                summaryContent.innerHTML = `<div class="error">${message}</div>`;
+            } else {
+                summaryContent.textContent = message;
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+        
+        function downloadSummary() {
+            if (!summaryText) return;
+            
+            const blob = new Blob([summaryText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Create professional filename
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+            const baseName = currentFileName ? currentFileName.replace('.pdf', '') : 'legal_summary';
+            a.download = `${baseName}_summary_${dateStr}_${timeStr}.txt`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
