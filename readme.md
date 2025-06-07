@@ -1,7 +1,3 @@
-Here’s a `README.md` file tailored to your PDF summarization project. It provides clear documentation for installation, usage, architecture, and customization options:
-
----
-
 # 🧠 Legal PDF Summarizer Web App
 
 A powerful web-based tool to **upload**, **analyze**, and **summarize lengthy legal PDF documents** using a large language model (`deepseek-ai/deepseek-llm-7b-chat`). Ideal for lawyers, legal researchers, or anyone needing fast insights from legal content.
@@ -122,10 +118,31 @@ You'll be prompted to input the path of a PDF file. The script extracts, summari
 
 ---
 
-## 📜 License
+## 📄 MIT License
 
-MIT License – Feel free to use, modify, and share.
+```
+MIT License
 
+Copyright (c) 2024 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 ---
 
 ## 🙏 Acknowledgements
@@ -133,7 +150,3 @@ MIT License – Feel free to use, modify, and share.
 * [`deepseek-ai/deepseek-llm-7b-chat`](https://huggingface.co/deepseek-ai/deepseek-llm-7b-chat)
 * [Hugging Face Transformers](https://github.com/huggingface/transformers)
 * Flask, PyPDF2
-
----
-
-Let me know if you want to deploy it to Hugging Face Spaces, Docker, or use an alternative model!
