@@ -1,4 +1,4 @@
-# 🧠 Legal PDF Summarizer Web App
+# 🧠 Legal PDF Summarizer Web Application
 
 A powerful web-based tool to **upload**, **analyze**, and **summarize lengthy legal PDF documents** using a large language model (`deepseek-ai/deepseek-llm-7b-chat`). Ideal for lawyers, legal researchers, or anyone needing fast insights from legal content.
 
