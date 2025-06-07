@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal AI Assistant | LawBrief AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #d4a76a;
+            --accent-color: #8b0000;
+            --light-bg: #f8f5f0;
+            --dark-text: #333333;
+            --light-text: #f8f8f8;
+            --bot-bubble: #f0f4f8;
+            --user-bubble: #e1e8ed;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23d4a76a" fill-opacity="0.05" d="M0 0h100v100H0z"/><path fill="none" stroke="%23d4a76a" stroke-opacity="0.1" stroke-width="1" d="M0 0h100v100H0z"/></svg>');
+        }
+        
+        .container {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            border-bottom: 5px solid var(--secondary-color);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 0.8rem;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e0e0e0;
+            height: 100%;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            background-color: #fcfcfc;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            line-height: 1.5;
+            position: relative;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .bot-message {
+            background-color: var(--bot-bubble);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            margin-right: auto;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .user-message {
+            background-color: var(--user-bubble);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            margin-left: auto;
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .message-time {
+            font-size: 0.65rem;
+            color: #666;
+            margin-top: 0.3rem;
+            text-align: right;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        #userInput {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            min-height: 50px;
+            max-height: 100px;
+            resize: none;
+            outline: none;
+            background: transparent;
+        }
+        
+        #sendBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #sendBtn:hover {
+            background-color: #0f2a4a;
+        }
+        
+        #sendBtn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        #loadingIndicator {
+            display: none;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background-color: var(--bot-bubble);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            align-self: flex-start;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            background-color: #fde8e8;
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #d32f2f;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            color: #666;
+            font-size: 0.8rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+                height: calc(100vh - 100px);
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .message {
+                max-width: 90%;
+                padding: 0.6rem 0.8rem;
+            }
+            
+            #userInput {
+                padding: 0.6rem;
+            }
+            
+            #sendBtn {
+                padding: 0.6rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">⚖️</div>
+                <div>
+                    <div class="logo-text">LawBrief AI</div>
+                    <div class="tagline">Legal Case Analysis Assistant</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h1>Legal AI Assistant</h1>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="chat-container" id="chatContainer">
+                <div class="message bot-message">
+                    <div>Welcome to the Legal AI Assistant. I'm trained on Indian legal cases and can help answer your legal questions. How can I assist you today?</div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+            
+            <div id="loadingIndicator">
+                <div class="typing-indicator">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span>AI is thinking...</span>
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <textarea id="userInput" placeholder="Type your legal question here..." rows="1"></textarea>
+                <button id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 LawBrief AI | Confidentiality Guaranteed</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatContainer = document.getElementById('chatContainer');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Auto-resize textarea
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Send message on button click or Enter key
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            const question = userInput.value.trim();
+            if (!question) return;
+
+            // Add user message to chat
+            addMessageToChat(question, 'user');
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            loadingIndicator.style.display = 'block';
+            errorMessage.style.display = 'none';
+            scrollChatToBottom();
+
+            try {
+                const response = await fetch('http://localhost:5000/api/ask-legal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessageToChat(data.answer, 'bot');
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = `Error: ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingIndicator.style.display = 'none';
+                sendBtn.disabled = false;
+                scrollChatToBottom();
+            }
+        }
+
+        function addMessageToChat(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.innerHTML = `
+                <div>${text}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+        }
+
+        function scrollChatToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    });
+    </script>
+</body>
+</html>
