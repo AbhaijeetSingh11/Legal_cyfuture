@@ -21,7 +21,7 @@
 ---
 
 ## 🗂️ Project Structure
-
+``` markdown
 ```
 ```
 LawBrief-AI/
@@ -39,6 +39,7 @@ LawBrief-AI/
 ├── README.md              # Project documentation
 └── requirements.txt       # Python dependencies (to be created if not present)
 ```
+````
 ````
 
 ### 1. Create a Virtual Environment
