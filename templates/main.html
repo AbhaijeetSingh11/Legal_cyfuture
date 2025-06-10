@@ -1,0 +1,264 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Legal Tools Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            text-align: center;
+            padding-top: 80px;
+        }
+        .nav-btn {
+            display: block;
+            width: 320px;
+            margin: 30px auto;
+            padding: 25px;
+            font-size: 1.3em;
+            background: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .nav-btn:hover {
+            background: #003974;
+        }
+        h1 {
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Legal Tools Suite</h1>
+    <a href="{{ url_for('pdf_summarizer_home') }}" class="nav-btn">PDF Summarizer</a>
+    <a href="{{ url_for('legal_assistant_home') }}" class="nav-btn">Legal Assistant (GPT-2)</a>
+    <a href="{{ url_for('case_outcome_predictor_home') }}" class="nav-btn">Case Outcome Predictor</a>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LawBrief AI – Legal Tools Suite</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #d4a76a;
+            --accent-color: #8b0000;
+            --light-bg: #f8f5f0;
+            --dark-text: #333333;
+            --light-text: #f8f8f8;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23d4a76a" fill-opacity="0.05" d="M0 0h100v100H0z"/><path fill="none" stroke="%23d4a76a" stroke-opacity="0.1" stroke-width="1" d="M0 0h100v100H0z"/></svg>');
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 2rem 0;
+            border-bottom: 5px solid var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-top: 2rem;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 2.2rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .tool-list {
+            margin: 2.5rem 0 1rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 6px;
+            padding: 1.5rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(26,54,93,0.06);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            width: 100%;
+            max-width: 400px;
+            min-width: 320px;
+            min-height: 90px;
+            justify-content: flex-start;
+        }
+        .tool-btn:hover {
+            background-color: #0f2a4a;
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 20px rgba(26,54,93,0.13);
+        }
+        .tool-icon {
+            font-size: 2.1rem;
+            color: var(--secondary-color);
+        }
+        .tool-title {
+            font-size: 1.18rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--secondary-color);
+            margin-bottom: 0.1rem;
+        }
+        .tool-desc {
+            font-size: 0.97rem;
+            color: #e9e2d7;
+            font-family: 'Roboto', sans-serif;
+            opacity: 0.92;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            .main-content {
+                padding: 1.2rem;
+            }
+            .tool-list {
+                gap: 1.2rem;
+            }
+            .tool-btn {
+                min-width: 0;
+                width: 100%;
+                max-width: 100%;
+                min-height: 70px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">⚖️</div>
+                <div>
+                    <div class="logo-text">LawBrief AI</div>
+                    <div class="tagline">Your AI-powered Legal Toolkit</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h1>AI Legal Tools Suite</h1>
+            <p>Choose a tool below to accelerate your legal workflow:</p>
+            <div class="tool-list">
+                <a href="{{ url_for('pdf_summarizer_home') }}" class="tool-btn">
+                    <span class="tool-icon">📄</span>
+                    <span>
+                        <span class="tool-title">PDF Summarizer</span><br>
+                        <span class="tool-desc">Summarize legal documents, contracts, and case files instantly.</span>
+                    </span>
+                </a>
+                <a href="{{ url_for('legal_assistant_home') }}" class="tool-btn">
+                    <span class="tool-icon">🤖</span>
+                    <span>
+                        <span class="tool-title">Legal Assistant (GPT-2)</span><br>
+                        <span class="tool-desc">Ask legal questions and get AI-powered answers.</span>
+                    </span>
+                </a>
+                <a href="{{ url_for('case_outcome_predictor_home') }}" class="tool-btn">
+                    <span class="tool-icon">⚖️</span>
+                    <span>
+                        <span class="tool-title">Case Outcome Predictor</span><br>
+                        <span class="tool-desc">Predict the likely outcome of a case based on details and party type.</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 LawBrief AI | Confidentiality Guaranteed | Attorney-Client Privilege Maintained</p>
+    </footer>
+</body>
+</html>
