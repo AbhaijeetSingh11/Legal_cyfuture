@@ -1,4 +1,4 @@
-```markdown
+
 # ⚖️ LawBrief AI – Legal Tools Suite
 
 **LawBrief AI** is a powerful AI-powered legal assistant platform built using **Flask**, offering three essential legal tools in one place:
@@ -39,7 +39,6 @@ LawBrief-AI/
 ├── README.md              # Project documentation
 └── requirements.txt       # Python dependencies (to be created if not present)
 ```
-````
 ````
 
 ### 1. Create a Virtual Environment
