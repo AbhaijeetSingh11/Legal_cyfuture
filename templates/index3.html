@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Case Outcome Predictor | LawBrief AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #d4a76a;
+            --accent-color: #8b0000;
+            --light-bg: #f8f5f0;
+            --dark-text: #333333;
+            --light-text: #f8f8f8;
+            --bot-bubble: #f0f4f8;
+            --user-bubble: #e1e8ed;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23d4a76a" fill-opacity="0.05" d="M0 0h100v100H0z"/><path fill="none" stroke="%23d4a76a" stroke-opacity="0.1" stroke-width="1" d="M0 0h100v100H0z"/></svg>');
+        }
+
+        .container {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            border-bottom: 5px solid var(--secondary-color);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 0.8rem;
+        }
+
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e0e0e0;
+            height: 100%;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .radio-option input {
+            accent-color: var(--primary-color);
+        }
+
+        #submitBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+        }
+
+        #submitBtn:hover {
+            background-color: #0f2a4a;
+        }
+
+        #submitBtn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #resultContainer {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            background-color: var(--bot-bubble);
+            border-left: 3px solid var(--secondary-color);
+            display: none;
+            margin-bottom: 2.5rem; /* Ensures space above footer */
+            min-height: 48px;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            background-color: #fde8e8;
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            border-left: 4px solid #d32f2f;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            color: #666;
+            font-size: 0.8rem;
+            border-top: 1px solid #e0e0e0;
+            background: #f8f5f0;
+            width: 100%;
+            margin-top: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">⚖️</div>
+                <div>
+                    <div class="logo-text">LawBrief AI</div>
+                    <div class="tagline">Legal Case Outcome Predictor</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <h1>Case Outcome Prediction</h1>
+            <p>Enter case details and select your party type to predict the likely outcome.</p>
+
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="caseDetails">Case Details</label>
+                    <textarea id="caseDetails" placeholder="Describe the facts and circumstances of the case..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Party Type</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="prosecution" name="partyType" value="prosecution" checked>
+                            <label for="prosecution">Prosecution</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="defense" name="partyType" value="defense">
+                            <label for="defense">Defense</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="submitBtn" onclick="predictOutcome()">Predict Outcome</button>
+
+                <div class="error-message" id="errorMessage"></div>
+
+                <div id="resultContainer">
+                    <h3>Prediction Result</h3>
+                    <div id="predictionResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 LawBrief AI | Confidentiality Guaranteed</p>
+    </footer>
+    <script>
+    async function predictOutcome() {
+        const caseDetails = document.getElementById('caseDetails').value.trim();
+        const partyType = document.querySelector('input[name="partyType"]:checked').value;
+        const errorMessage = document.getElementById('errorMessage');
+        const resultContainer = document.getElementById('resultContainer');
+        const predictionResult = document.getElementById('predictionResult');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (!caseDetails) {
+            errorMessage.textContent = "Please enter case details";
+            errorMessage.style.display = "block";
+            resultContainer.style.display = "none";
+            return;
+        }
+
+        submitBtn.disabled = true;
+        errorMessage.style.display = "none";
+
+        try {
+            const response = await fetch('http://localhost:5000/api/predict-outcome', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    case_details: caseDetails,
+                    party_type: partyType
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                predictionResult.textContent = data.result;
+                resultContainer.style.display = "block";
+            } else {
+                errorMessage.textContent = data.error;
+                errorMessage.style.display = "block";
+                resultContainer.style.display = "none";
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorMessage.textContent = "An error occurred while processing your request";
+            errorMessage.style.display = "block";
+            resultContainer.style.display = "none";
+        } finally {
+            submitBtn.disabled = false;
+        }
+    }
+    </script>
+</body>
+</html>
