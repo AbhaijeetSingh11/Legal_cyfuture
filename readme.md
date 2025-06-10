@@ -1,152 +1,122 @@
-# 🧠 Legal PDF Summarizer Web Application
+```markdown
+# ⚖️ LawBrief AI – Legal Tools Suite
 
-A powerful web-based tool to **upload**, **analyze**, and **summarize lengthy legal PDF documents** using a large language model (`deepseek-ai/deepseek-llm-7b-chat`). Ideal for lawyers, legal researchers, or anyone needing fast insights from legal content.
+**LawBrief AI** is a powerful AI-powered legal assistant platform built using **Flask**, offering three essential legal tools in one place:
 
----
-
-## 📌 Features
-
-* 📄 Upload PDF legal documents.
-* 🔍 Automatic extraction and cleaning of text.
-* 🤖 Chunk-wise summarization using a 7B LLM with instruction-tuned prompts.
-* 🕒 Built-in timeout protection (7 minutes max per request).
-* 💾 Download summaries in `.txt` format.
-* 🧪 Fallback to partial content summary if the full process fails.
+- 📄 **PDF Summarizer** – Instantly summarize legal documents, contracts, and case files.
+- 🤖 **Legal Assistant (GPT-2)** – Ask legal questions and receive AI-powered, context-aware responses.
+- ⚖️ **Case Outcome Predictor** – Predict the likely outcome of a legal case based on factual details and party type.
 
 ---
 
-## 🏗️ Architecture Overview
+## 🌟 Features
 
-```
-Frontend (HTML + JS)
-    ↓
-Flask Backend (Python)
-    ↓
-Text Extraction (PyPDF2)
-    ↓
-Chunking & Summarization (Transformers - DeepSeek LLM)
-    ↓
-Final Summary Response
-```
+- ✨ Modern, responsive web interface
+- 🔒 Secure PDF upload and summarization
+- 🧠 Natural language legal Q&A using GPT-2
+- 📊 ML-based legal case outcome prediction
+- 🧩 Modular codebase for easy customization
+- 📄 MIT Licensed for personal and commercial use
 
 ---
 
-## 🚀 Setup Instructions
+## 🗂️ Project Structure
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/legal-pdf-summarizer.git
-cd legal-pdf-summarizer
 ```
+```
+LawBrief-AI/
+├── app_combine.py         # Main Flask backend combining all tools
+├── pdf_summarizer.py      # Logic for extracting and summarizing PDF content
+├── model.joblib           # ML model for case outcome prediction
+├── vectorizer.joblib      # Text vectorizer used with the prediction model
+├── templates/             # HTML templates for the frontend
+│   ├── main.html          # Homepage with navigation
+│   ├── index.html         # UI for the PDF Summarizer
+│   ├── index2.html        # UI for the Legal Assistant (GPT-2)
+│   └── index3.html        # UI for the Case Outcome Predictor
+├── static/                # (Optional) CSS, JavaScript, images, etc.
+├── LICENSE                # MIT License file
+├── README.md              # Project documentation
+└── requirements.txt       # Python dependencies (to be created if not present)
+```
+````
+````
 
-### 2. Create a Virtual Environment
+### 1. Create a Virtual Environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### 3. Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-If `requirements.txt` doesn't exist yet, here’s a typical content:
+<details>
+<summary>📦 Example <code>requirements.txt</code>:</summary>
 
-```txt
-Flask
-PyPDF2
+```
+flask
+flask_cors
 transformers
 torch
+huggingface_hub
+joblib
+nltk
+werkzeug
 ```
 
-Ensure your environment supports GPU (CUDA or bfloat16) for optimal performance.
+</details>
 
----
+### 3. Prepare NLTK Resources
 
-### 4. Run the Web App
+```python
+# Run this once in Python shell
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+```
+
+### 4. Run the Application
 
 ```bash
-python app.py
+python app_combine.py
 ```
 
-Visit [http://localhost:5000](http://localhost:5000) in your browser.
+Open your browser and go to [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## 🧪 Sample Usage via CLI (Optional)
+## 🧪 Usage
 
-You can also use the script directly via command line:
-
-```bash
-python pdf_summarizer.py
-```
-
-You'll be prompted to input the path of a PDF file. The script extracts, summarizes, and saves both the cleaned text and summary as `.txt` files.
+* 🏠 **Home** – Navigate between tools
+* 📄 **PDF Summarizer** – Upload a PDF and get a summary
+* 🤖 **Legal Assistant** – Ask legal questions via chat interface
+* ⚖️ **Case Predictor** – Enter details and predict case outcome
 
 ---
 
-## 📂 Project Structure
+## 🛠️ Customization
 
-```
-.
-├── app.py                # Flask backend
-├── pdf_summarizer.py     # Core summarization logic
-├── templates/
-│   └── index.html        # Frontend HTML page
-├── static/               # Optional: styles or JS
-└── README.md             # Project documentation
-```
+* 🔁 To change the Hugging Face model, update the model name in `app_combine.py`.
+* 🧠 Retrain or replace `model.joblib` and `vectorizer.joblib` for a better case predictor.
+* 🎨 Edit HTML files in the `templates/` folder to redesign the UI.
 
 ---
 
-## ⚙️ Configuration & Customization
+## 📄 License
 
-* **Model Selection**: You can change the `model_name` in `summarize_long_text()` to another `transformers`-compatible LLM.
-* **Summary Length**: Adjust `max_new_tokens` in `generate_summary()` or final summary generation.
-* **Timeout**: Configurable in JavaScript frontend (`420000 ms = 7 minutes`).
+This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
-## ⚠️ Notes
+## 🙏 Acknowledgments
 
-* For large PDFs (>50MB), consider pre-splitting before uploading.
-* Encrypted or scanned PDFs may not yield proper results.
-* The LLM summarizer assumes a stable internet or cached model if run locally with HuggingFace transformers.
-
+* [Flask](https://flask.palletsprojects.com/)
+* [Hugging Face Transformers](https://huggingface.co/transformers/)
 ---
 
-## 📄 MIT License
-
-```
-MIT License
-
-Copyright (c) 2024 
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
----
-
-## 🙏 Acknowledgements
-
-* [`deepseek-ai/deepseek-llm-7b-chat`](https://huggingface.co/deepseek-ai/deepseek-llm-7b-chat)
-* [Hugging Face Transformers](https://github.com/huggingface/transformers)
-* Flask, PyPDF2
+> © 2025 LawBrief AI – Designed to make legal tech smarter.
